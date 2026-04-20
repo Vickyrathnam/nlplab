@@ -1,13 +1,8 @@
-text = "Natural Language Processing is interesting"
-tokens = []
-word = ""
-for ch in text:
-    if ch != " ":
-        word += ch
-    else:
-        tokens.append(word)
-        word = ""
-tokens.append(word)
+## Tokenization
+text = "ram and sita are couple."
+text = text.lower()
+for ch in ".,!?:;":
+    text=text.replace(ch,"")
 
-print("Original Text:", text)
-print("Tokens:", tokens)
+words=text.split()
+print(words)
