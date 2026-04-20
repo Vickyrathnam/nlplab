@@ -1,29 +1,34 @@
+##Sentece boundary
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
 
-X_train = [
-    [1], [1], [1],   # sentence boundaries
-    [0], [0], [0]    # not boundaries
+# Step 1: Training data (simple examples)
+train_text = [
+    "Mr.", "Dr.", "etc.",
+    "He went home.", "She is happy.", "They are playing."
 ]
 
-y_train = [1, 1, 1, 0, 0, 0]
+# Labels: 0 = not sentence end, 1 = sentence end
+labels = [0, 0, 0, 1, 1, 1]
+
+# Step 2: Convert to numeric
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(train_text)
+
+# Step 3: Train model
 model = LogisticRegression()
-model.fit(X_train, y_train)
-print("Model trained successfully\n")
-text = input("Enter text: ")
-words = text.split()
-sentences = [words[0]]
-for i in range(1, len(words)):
-    prev_word = words[i-1]
-    curr_word = words[i]
+model.fit(X, labels)
 
-    feature = 1 if (prev_word[-1] in ".!?" and curr_word[0].isupper()) else 0
+# Step 4: Take dynamic input
+test = input("Enter text: ")
 
-    prediction = model.predict([[feature]])[0]
+# Step 5: Predict
+X_test = vectorizer.transform([test])
 
-    if prediction == 1:
-        sentences.append(curr_word)
-    else:
-        sentences[-1] += " " + curr_word
-print("\nPredicted Sentences:")
-for s in sentences:
-    print(s)
+prediction = model.predict(X_test)[0]
+
+# Step 6: Output
+if prediction == 1:
+    print("It is a Sentence Boundary")
+else:
+    print("Not a Sentence Boundary")
