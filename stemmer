@@ -1,35 +1,14 @@
-def stem(word):
-  
-    if word.endswith("sses"):
-        word = word[:-2]
-    elif word.endswith("ies"):
-        word = word[:-2]
-    elif word.endswith("s") and not word.endswith("ss"):
-        word = word[:-1]
-
-  
-    if word.endswith("ing"):
-        word = word[:-3]
-    elif word.endswith("ed"):
-        word = word[:-2]
-
-
-    if word.endswith("ational"):
-        word = word[:-7] + "ate"
-    elif word.endswith("tional"):
-        word = word[:-6] + "tion"
-
- 
-    if word.endswith("e"):
-        word = word[:-1]
-
+### porter stemmer
+def porter_stem(word):
+    suffixes = ['ing', 'ly', 'ed', 'ious', 'ies', 'ive', 'es', 's', 'ment']
+    
+    for suffix in suffixes:
+        if word.endswith(suffix):
+            return word[:-len(suffix)]
+    
     return word
 
-
-
-words = ["playing", "connected", "relational", "studies"]
-word = input("Enter a word: ")
-print(word, "->", stem(word))
+words = ["playing", "played", "happiness", "movement"]
 
 for w in words:
-    print(w, "->", stem(w))
+    print(w, "->", porter_stem(w))
