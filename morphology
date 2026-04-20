@@ -1,34 +1,36 @@
-# Dictionary Lookup
-morph_dict = {
-    "children": "child",
-    "mice": "mouse",
-    "cars": "car"
+# Morphological Analysis using Dictionary Lookup
+
+# Step 1: Create a dictionary of root words
+dictionary = {
+    "play": "verb",
+    "walk": "verb",
+    "eat": "verb",
+    "go": "verb",
+    "read": "verb",
+    "cat": "noun",
+    "dog": "noun"
 }
 
-word = input("Enter word: ")
+# Step 2: Define common suffixes
+suffixes = ["ing", "ed", "s"]
 
-# 1. Dictionary Model
-if word in morph_dict:
-    root = morph_dict[word]
-    feature = "irregular (dictionary)"
+# Step 3: Morphological analyzer function
+def morphological_analysis(word):
+    # Direct lookup
+    if word in dictionary:
+        return f"Root word found: {word} ({dictionary[word]})"
+    
+    # Try removing suffixes
+    for suffix in suffixes:
+        if word.endswith(suffix):
+            root = word[:-len(suffix)]
+            if root in dictionary:
+                return f"Root word: {root} ({dictionary[root]}), Suffix: {suffix}"
+    
+    return "Word not found in dictionary"
 
-# 2. Finite State (Rule-Based)
-elif word.endswith("ing"):
-    root = word[:-3]
-    feature = "continuous"
-elif word.endswith("ed"):
-    root = word[:-2]
-    feature = "past tense"
-elif word.endswith("s"):
-    root = word[:-1]
-    feature = "plural"
+# Step 4: Test words
+word = input("Enter a word: ")
 
-# 3. Unification (Feature tagging)
-else:
-    root = word
-    feature = "base form"
-
-# Output
-print("Word   :", word)
-print("Root   :", root)
-print("Feature:", feature)
+# Step 5: Analyze words
+print(f"{word} -> {morphological_analysis(word)}")
