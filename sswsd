@@ -1,27 +1,39 @@
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
+### WSD - Lesk Algorithm
+import nltk
+from nltk.corpus import wordnet as wn
 
-sentences = [
-    "I deposited money in the bank",
-    "She works at a bank",
-    "He withdrew cash from the bank",
-    "The bank gives loans",
-    "The river bank is beautiful",
-    "We sat on the bank of the river",
-    "Children played near the river bank",
-    "The bank of the river was muddy"
-]
+# download only wordnet (no punkt needed)
+nltk.download('wordnet')
 
-labels = ["finance","finance","finance","finance",
-          "river","river","river","river"]
+# Simple tokenization using split()
+def simple_tokenize(text):
+    return text.lower().split()
 
-vectorizer = CountVectorizer()
-X = vectorizer.fit_transform(sentences)
+# Lesk Algorithm (simple version)
+def lesk(sentence, word):
+    context = set(simple_tokenize(sentence))
+    
+    best_sense = None
+    max_overlap = 0
+    
+    for sense in wn.synsets(word):
+        gloss = set(simple_tokenize(sense.definition()))
+        
+        overlap = len(context & gloss)
+        
+        if overlap > max_overlap:
+            max_overlap = overlap
+            best_sense = sense
+    
+    return best_sense
 
-model = MultinomialNB()
-model.fit(X, labels)
+# Test
+sentence = input("enter sentence:")
+word =  input("enter word")
 
-test = ["He went to the bank to withdraw money"]
-X_test = vectorizer.transform(test)
+sense = lesk(sentence, word)
 
-print("Predicted Sense:", model.predict(X_test)[0])
+print("Sentence:", sentence)
+print("Word:", word)
+print("Best Sense:", sense.name())
+print("Meaning:", sense.definition())
