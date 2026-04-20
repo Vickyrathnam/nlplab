@@ -1,30 +1,37 @@
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics.pairwise import cosine_similarity
+###Token Boundary Detection
+
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
 
-# Train model
-model = LogisticRegression().fit([[0.9],[0.2]], [0,1])
+# Step 1: More realistic training data
+sent_pairs = [
+    "India won the cricket match The players celebrated their victory",
+    "The team practiced hard before the tournament The coach was proud",
+    
+    "I love playing cricket The weather is very hot today",
+    "She is cooking dinner The stock market is unstable"
+]
 
-def split_topics(text):
-    s = text.split(". ")
-    v = CountVectorizer().fit_transform(s)
+# Labels: 0 = same topic, 1 = topic change
+labels = [0, 0, 1, 1]
 
-    print(s[0])
-    prev_topic = False   # 🔹 control multiple splits
+# Step 2: Convert text to numbers
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(sent_pairs)
 
-    for i in range(1, len(s)):
-        sim = cosine_similarity(v[i-1], v[i])[0][0]
-        pred = model.predict([[sim]])[0]
+# Step 3: Train model
+model = LogisticRegression()
+model.fit(X, labels)
 
-        # 🔹 Apply condition to avoid repeated splits
-        if pred == 1 and not prev_topic:
-            print("\n--- New Topic ---")
-            prev_topic = True
-        else:
-            prev_topic = False
+# Step 4: Dynamic input
+text = input("Enter two sentences: ")
 
-        print(s[i])
+# Step 5: Predict
+X_test = vectorizer.transform([text])
+prediction = model.predict(X_test)[0]
 
-# Input
-text = input("Enter text: ")
-split_topics(text)
+# Step 6: Output
+if prediction == 1:
+    print("👉 Topic Changed")
+else:
+    print("👉 Same Topic")
