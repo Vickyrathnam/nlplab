@@ -1,27 +1,39 @@
+###WSD using supervised learning (Naive Bayes)
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
+# Step 1: Training Data (manually labeled)
+# bank = 0 (financial), bank = 1 (river)
 sentences = [
     "I deposited money in the bank",
-    "She works at a bank",
-    "He withdrew cash from the bank",
-    "The bank gives loans",
+    "She works at the bank",
+    "He opened a bank account",
     "The river bank is beautiful",
-    "We sat on the bank of the river",
-    "Children played near the river bank",
-    "The bank of the river was muddy"
+    "They sat near the bank of the river",
+    "The bank was full of sand"
 ]
 
-labels = ["finance","finance","finance","finance",
-          "river","river","river","river"]
+labels = [0, 0, 0, 1, 1, 1]  # correct senses
 
+# Step 2: Convert text to numbers (feature extraction)
 vectorizer = CountVectorizer()
 X = vectorizer.fit_transform(sentences)
 
+# Step 3: Train model
 model = MultinomialNB()
 model.fit(X, labels)
 
-test = ["He went to the bank to withdraw money"]
-X_test = vectorizer.transform(test)
+# Step 4: Test sentence
+test_sentence = ["He sat on the bank of the river"]
 
-print("Predicted Sense:", model.predict(X_test)[0])
+# Convert test sentence
+X_test = vectorizer.transform(test_sentence)
+
+# Step 5: Predict sense
+prediction = model.predict(X_test)
+
+# Step 6: Output
+if prediction[0] == 0:
+    print("Sense: Financial Bank")
+else:
+    print("Sense: River Bank")
