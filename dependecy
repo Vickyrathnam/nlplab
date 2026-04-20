@@ -1,23 +1,16 @@
-import nltk
-from nltk.grammar import DependencyGrammar
-from nltk.parse import ProjectiveDependencyParser
+import spacy
+from spacy import displacy
 
-# Updated dependency grammar
-grammar = DependencyGrammar.fromstring("""
-'hit' -> 'boy' | 'ball' | 'with'
-'boy' -> 'the'
-'ball' -> 'the'
-'with' -> 'bat'
-'bat' -> 'the'
-""")
 
-# Parser
-parser = ProjectiveDependencyParser(grammar)
+# Load pretrained English dependency parser
+nlp = spacy.load("en_core_web_sm")
 
-# Updated sentence
-sentence = "the boy hit the ball with the bat".split()
+text = "The boy hit the ball."
+doc = nlp(text)
 
-# Parse and print
-for tree in parser.parse(sentence):
-    print(tree)
-    tree.pretty_print()
+# Print dependency relations
+for token in doc:
+    print(token.text, token.dep_, token.head.text)
+
+# Visualize dependency tree
+displacy.serve(doc, style="dep")
