@@ -1,21 +1,18 @@
 import nltk
 from nltk import CFG
-from nltk.parse import ChartParser
 
-
-grammar = CFG.fromstring("""
-S -> NP VP
-NP -> Det N
+g = CFG.fromstring("""
+S  -> NP VP
+NP -> DT NN
 VP -> V NP
-Det -> 'The' | 'an'
-N -> 'boy' | 'apple'
-V -> 'eats'
+DT -> 'the'
+NN -> 'boy' | 'ball'
+V  -> 'hit'
 """)
 
-parser = ChartParser(grammar)
+parser = nltk.ChartParser(g)
 
-sentence = "The boy eats an apple".split()
+s = "the boy hit the ball".split()
 
-for tree in parser.parse(sentence):
-    print(tree)
+for tree in parser.parse(s):
     tree.pretty_print()
